@@ -1,1 +1,1 @@
-This is an app aimed at helping with budgeting.
+This is an app aimed at helping users with budgeting.
