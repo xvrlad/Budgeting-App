@@ -1,9 +1,8 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/xvrlad/budgeting-app/controllers"
 	"github.com/xvrlad/budgeting-app/initializers"
 )
 
@@ -14,10 +13,12 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+
+	itemsRoute := r.Group("/items") 
+	{
+		itemsRoute.POST("/", controllers.CreateItem)
+		itemsRoute.GET("/", controllers.GetItems)
+	}
+	
 	r.Run()
 }
