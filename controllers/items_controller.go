@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -84,26 +85,41 @@ func EditItem(c *gin.Context){
 	id := c.Param("id")
 	var item models.Item
 	firstResult := initializers.DB.First(&item, id)
-
 	if (firstResult.Error != nil) {
 		c.JSON(400, gin.H{
 			"message": firstResult.Error.Error(),
 		})
+		return
 	}
 
-	item.Name = request.Name	
-	item.Price = request.Price	
-	item.WantDate = request.WantDate	
-
-	saveResult := initializers.DB.Save(&item)
-
+	saveResult := initializers.DB.Model(&item).Updates(models.Item{
+		Name : request.Name,
+		Price: request.Price,
+		WantDate: request.WantDate,
+	})
 	if (saveResult.Error != nil) {
 		c.JSON(400, gin.H{
 			"message": saveResult.Error.Error(),
 		})
+		return
 	}
 
 	c.JSON(200, gin.H{
 		"item": item,
 	})
+}
+
+func DeleteItem(c *gin.Context){
+	id := c.Param("id")
+
+	result := initializers.DB.Delete(&models.Item{}, id)
+
+	if (result.Error != nil){
+		c.JSON(400, gin.H{
+			"message": result.Error.Error(),
+		})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }

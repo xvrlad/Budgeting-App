@@ -20,6 +20,7 @@ func main() {
 		itemsRoute.GET("/", controllers.GetItems)
 		itemsRoute.GET("/:id", controllers.GetItemById)
 		itemsRoute.PUT("/:id", controllers.EditItem)
+		itemsRoute.DELETE("/:id", controllers.DeleteItem)
 	}
 	
 	r.Run()
