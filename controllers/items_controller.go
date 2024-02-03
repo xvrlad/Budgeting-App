@@ -72,3 +72,38 @@ func GetItemById(c *gin.Context) {
 		"item": item,
 	})
 }
+
+func EditItem(c *gin.Context){
+	var request struct {
+		Name string
+		Price float32
+		WantDate time.Time
+	}
+	c.Bind(&request)
+
+	id := c.Param("id")
+	var item models.Item
+	firstResult := initializers.DB.First(&item, id)
+
+	if (firstResult.Error != nil) {
+		c.JSON(400, gin.H{
+			"message": firstResult.Error.Error(),
+		})
+	}
+
+	item.Name = request.Name	
+	item.Price = request.Price	
+	item.WantDate = request.WantDate	
+
+	saveResult := initializers.DB.Save(&item)
+
+	if (saveResult.Error != nil) {
+		c.JSON(400, gin.H{
+			"message": saveResult.Error.Error(),
+		})
+	}
+
+	c.JSON(200, gin.H{
+		"item": item,
+	})
+}
