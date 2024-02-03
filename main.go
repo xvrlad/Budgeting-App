@@ -18,6 +18,7 @@ func main() {
 	{
 		itemsRoute.POST("/", controllers.CreateItem)
 		itemsRoute.GET("/", controllers.GetItems)
+		itemsRoute.GET("/:id", controllers.GetItemById)
 	}
 	
 	r.Run()

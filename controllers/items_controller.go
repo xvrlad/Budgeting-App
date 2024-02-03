@@ -24,8 +24,10 @@ func CreateItem(c *gin.Context) {
 
 	result := initializers.DB.Create(&item) 
 
-	if result.Error != nil {
-		c.Status(400)
+	if (result.Error != nil) {
+		c.JSON(400, gin.H{
+			"message": result.Error.Error(),
+		})
 		return
 	}
 
@@ -38,11 +40,35 @@ func CreateItem(c *gin.Context) {
 func GetItems(c *gin.Context) {
 	// Get items
 	var items []models.Item
-	initializers.DB.Find(&items)
+	result := initializers.DB.Find(&items)
 
-	// todo: fix returned times as the actual format 
+	if (result.Error != nil) {
+		c.JSON(400, gin.H{
+			"message": result.Error.Error(),
+		})
+		return
+	}
+
 	// Return items
 	c.JSON(200, gin.H{
 		"items": items,
+	})
+}
+
+func GetItemById(c *gin.Context) {
+	id := c.Param("id")
+
+	var item models.Item
+	result := initializers.DB.First(&item, id)
+
+	if (result.Error != nil) {
+		c.JSON(400, gin.H{
+			"message": result.Error.Error(),
+		})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"item": item,
 	})
 }
